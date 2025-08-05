@@ -1,9 +1,3 @@
-local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-local existing = playerGui:FindFirstChild("KeyGui")
-if existing then
-    existing:Destroy()
-end
-
 local HttpService = game:GetService("HttpService")
 local TweenService = game:GetService("TweenService")
 
