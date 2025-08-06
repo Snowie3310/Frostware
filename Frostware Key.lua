@@ -1,35 +1,10 @@
 repeat task.wait() until game:IsLoaded()
+
 local api = loadstring(game:HttpGet("https://sdkapi-public.luarmor.net/library.lua"))()
 api.script_id = "87fdf6d3de83847864dfa76f8eb36be6"
 
-local function notify(title, text, duration)
-	game:GetService("StarterGui"):SetCore("SendNotification", {
-		Title = title,
-		Text = text,
-		Duration = duration or 5
-	})
-end
-
-local function notifyCustom(text)
-	local existingGui = game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("KeyGui")
-	if not existingGui then return end
-	local note = Instance.new("TextLabel", existingGui:FindFirstChild("Frame") or existingGui)
-	note.Size = UDim2.new(0, 260, 0, 20)
-	note.Position = UDim2.new(0.05, 0, 0.27, 0)
-	note.Text = text
-	note.Font = Enum.Font.FredokaOne
-	note.TextColor3 = Color3.fromRGB(255, 100, 100)
-	note.BackgroundTransparency = 1
-	note.TextScaled = true
-
-	task.delay(3, function()
-		if note then
-			note:Destroy()
-		end
-	end)
-end
-
 local savedKeyPath = "FrostWare_Key.lua"
+
 if isfile(savedKeyPath) then
 	local savedKey = readfile(savedKeyPath)
 	local status = api.check_key(savedKey)
@@ -37,205 +12,237 @@ if isfile(savedKeyPath) then
 		getgenv().script_key = savedKey
 		loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/87fdf6d3de83847864dfa76f8eb36be6.lua"))()
 		return
-	else
-		task.wait(1)
 	end
 end
 
-local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+local TweenService = game:GetService("TweenService")
 
-local KeyGui = Instance.new("ScreenGui")
-KeyGui.Name = "KeyGui"
-KeyGui.ResetOnSpawn = false
-KeyGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-KeyGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
-local Background = Instance.new("Frame", KeyGui)
-Background.Name = "Frame"
-Background.Size = UDim2.new(0, 297, 0, 200)
-Background.Position = UDim2.new(0.165, 0, 0.34, 0)
-Background.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
-Background.Active = true
-Background.Draggable = true
-Instance.new("UICorner", Background)
-Instance.new("UIStroke", Background).Thickness = 2.9
-
-local CloseBtn = Instance.new("TextButton", Background)
-CloseBtn.Position = UDim2.new(0.005, 0, 0.015, 0)
-CloseBtn.Size = UDim2.new(0, 25, 0, 25)
-CloseBtn.Text = "X"
-CloseBtn.Font = Enum.Font.FredokaOne
-CloseBtn.FontFace.Weight = Enum.FontWeight.Bold
-CloseBtn.TextSize = 22
-CloseBtn.TextColor3 = Color3.fromRGB(255, 75, 75)
-CloseBtn.BackgroundTransparency = 1
-Instance.new("UIStroke", CloseBtn).Thickness = 1.3
-
-CloseBtn.MouseButton1Click:Connect(function()
-	KeyGui:Destroy()
-end)
-
-local Title = Instance.new("TextLabel", Background)
-Title.Position = UDim2.new(0.115, 0, 0.02, 0)
-Title.Size = UDim2.new(0, 123, 0, 26)
-Title.Text = "Frostware"
-Title.Font = Enum.Font.FredokaOne
-Title.FontFace.Weight = Enum.FontWeight.Bold
-Title.TextSize = 29
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.BackgroundTransparency = 1
-Instance.new("UIStroke", Title).Thickness = 1.3
-Instance.new("UIGradient", Title).Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 255)),
-	ColorSequenceKeypoint.new(0.15, Color3.fromRGB(0, 0, 147)),
-	ColorSequenceKeypoint.new(0.30, Color3.fromRGB(0, 0, 127)),
-	ColorSequenceKeypoint.new(0.59, Color3.fromRGB(0, 0, 127)),
-	ColorSequenceKeypoint.new(1.00, Color3.fromRGB(17, 43, 127))
-})
-
-local discord = Instance.new("TextLabel", Background)
-discord.Position = UDim2.new(0.689, 0, 0.015, 0)
-discord.Size = UDim2.new(0, 86, 0, 22)
-discord.Text = ".gg/getfrost"
-discord.Font = Enum.Font.FredokaOne
-discord.FontFace.Weight = Enum.FontWeight.Bold
-discord.TextSize = 14
-discord.TextColor3 = Color3.fromRGB(255, 255, 255)
-discord.BackgroundTransparency = 1
-Instance.new("UIStroke", discord).Thickness = 1.3
-
-local selectedLink = nil
-local stroke1, stroke2
-
-local Option1 = Instance.new("TextButton", Background)
-Option1.Size = UDim2.new(0, 135, 0, 25)
-Option1.Position = UDim2.new(0.05, 0, 0.17, 0)
-Option1.Text = "Linkvertise"
-Option1.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-Option1.Font = Enum.Font.FredokaOne
-Option1.FontFace.Weight = Enum.FontWeight.Bold
-Option1.TextSize = 14
-Option1.TextColor3 = Color3.fromRGB(255, 255, 255)
-Instance.new("UICorner", Option1)
-stroke1 = Instance.new("UIStroke", Option1)
-stroke1.Thickness = 1.3
-
-local Option2 = Instance.new("TextButton", Background)
-Option2.Size = UDim2.new(0, 135, 0, 25)
-Option2.Position = UDim2.new(0.51, 0, 0.17, 0)
-Option2.Text = "Lootlab"
-Option2.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
-Option2.Font = Enum.Font.FredokaOne
-Option2.FontFace.Weight = Enum.FontWeight.Bold
-Option2.TextSize = 14
-Option2.TextColor3 = Color3.fromRGB(255, 255, 255)
-Instance.new("UICorner", Option2)
-stroke2 = Instance.new("UIStroke", Option2)
-stroke2.Thickness = 1.3
-
-local function clearSelection()
-	stroke1.Color = Color3.fromRGB(255, 255, 255)
-	stroke2.Color = Color3.fromRGB(255, 255, 255)
+local function notif(text, title)
+	StarterGui:SetCore("SendNotification", {
+		Title = title or "FrostWare",
+		Text = text or "",
+		Duration = 5
+	})
 end
 
-Option1.MouseButton1Click:Connect(function()
-	Option1.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-	Option2.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
-	selectedLink = "https://ads.luarmor.net/v/cb/dwQQOBvvyFOS/GwwwrPjgoGMNFjlB"
-	clearSelection()
-	stroke1.Color = Color3.fromRGB(0, 170, 255)
+local gui = Instance.new("ScreenGui", playerGui)
+gui.Name = "FWSDkey"
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 360, 0, 240)
+main.Position = UDim2.new(0.5, 0, 0.5, 0)
+main.AnchorPoint = Vector2.new(0.5, 0.5)
+main.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+main.BorderSizePixel = 0
+main.Parent = gui
+main.Active = true
+main.Draggable = true
+Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
+
+local title = Instance.new("TextLabel", main)
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Position = UDim2.new(0, 0, 0, 10)
+title.BackgroundTransparency = 1
+title.Text = "FrostWare"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+
+local closeBtn = Instance.new("TextButton", main)
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -40, 0, 5)
+closeBtn.BackgroundTransparency = 1
+closeBtn.Text = "X"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 16
+local xGradient = Instance.new("UIGradient", closeBtn)
+xGradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 30))
+}
+xGradient.Rotation = 45
+closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.MouseButton1Click:Connect(function()
+	gui:Destroy()
 end)
 
-Option2.MouseButton1Click:Connect(function()
-	Option2.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-	Option1.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
-	selectedLink = "https://ads.luarmor.net/v/cb/OwAyyGgObIDY/MHkWoGnuWBlfakdA"
-	clearSelection()
-	stroke2.Color = Color3.fromRGB(0, 170, 255)
-end)
+local subtitle = Instance.new("TextLabel", main)
+subtitle.Size = UDim2.new(1, 0, 0, 20)
+subtitle.Position = UDim2.new(0, 0, 0, 40)
+subtitle.BackgroundTransparency = 1
+subtitle.Text = "Enter your key to begin. For free."
+subtitle.TextColor3 = Color3.fromRGB(170, 170, 170)
+subtitle.Font = Enum.Font.Gotham
+subtitle.TextSize = 14
 
-local TextBox = Instance.new("TextBox", Background)
-TextBox.Position = UDim2.new(0.137, 0, 0.37, 0)
-TextBox.Size = UDim2.new(0, 220, 0, 26)
-TextBox.PlaceholderText = "Key Here"
-TextBox.Text = ""
-TextBox.Font = Enum.Font.FredokaOne
-TextBox.TextSize = 14
-TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-TextBox.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
-Instance.new("UICorner", TextBox)
-Instance.new("UIStroke", TextBox).Thickness = 1.3
+local toggleFrame = Instance.new("Frame", main)
+toggleFrame.Size = UDim2.new(0.9, 0, 0, 40)
+toggleFrame.Position = UDim2.new(0.05, 0, 0, 70)
+toggleFrame.BackgroundTransparency = 1
 
-local GET = Instance.new("TextButton", Background)
-GET.Position = UDim2.new(0.168, 0, 0.57, 0)
-GET.Size = UDim2.new(0, 89, 0, 44)
-GET.Text = "Get Key"
-GET.Font = Enum.Font.FredokaOne
-GET.FontFace.Weight = Enum.FontWeight.Bold
-GET.TextSize = 14
-GET.TextColor3 = Color3.fromRGB(255, 255, 255)
-GET.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-Instance.new("UICorner", GET)
-Instance.new("UIStroke", GET).Thickness = 1.3
+local function createGlowOutline(parent)
+	Instance.new("UICorner", parent).CornerRadius = UDim.new(0, 8)
+	local stroke = Instance.new("UIStroke", parent)
+	stroke.Name = "GlowStroke"
+	stroke.Color = Color3.fromRGB(100, 70, 255)
+	stroke.Thickness = 2
+	stroke.Transparency = 1
+	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	return stroke
+end
 
-local CHECK = Instance.new("TextButton", Background)
-CHECK.Position = UDim2.new(0.538, 0, 0.57, 0)
-CHECK.Size = UDim2.new(0, 89, 0, 44)
-CHECK.Text = "Check Key"
-CHECK.Font = Enum.Font.FredokaOne
-CHECK.FontFace.Weight = Enum.FontWeight.Bold
-CHECK.TextSize = 14
-CHECK.TextColor3 = Color3.fromRGB(255, 255, 255)
-CHECK.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-Instance.new("UICorner", CHECK)
-Instance.new("UIStroke", CHECK).Thickness = 1.3
+local linkvertise = Instance.new("TextButton", toggleFrame)
+linkvertise.Size = UDim2.new(0.5, -5, 1, 0)
+linkvertise.Position = UDim2.new(0, 0, 0, 0)
+linkvertise.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+linkvertise.Text = "Linkvertise"
+linkvertise.TextColor3 = Color3.fromRGB(200, 200, 200)
+linkvertise.Font = Enum.Font.Gotham
+linkvertise.TextSize = 14
+linkvertise.AutoButtonColor = false
+local linkGlow = createGlowOutline(linkvertise)
 
-local ACTIVATE = Instance.new("TextButton", Background)
-ACTIVATE.Position = UDim2.new(0.167, 0, 0.83, 0)
-ACTIVATE.Size = UDim2.new(0, 198, 0, 23)
-ACTIVATE.Text = "Copy Discord"
-ACTIVATE.Font = Enum.Font.FredokaOne
-ACTIVATE.FontFace.Weight = Enum.FontWeight.Bold
-ACTIVATE.TextSize = 14
-ACTIVATE.TextColor3 = Color3.fromRGB(255, 255, 255)
-ACTIVATE.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-Instance.new("UICorner", ACTIVATE)
-Instance.new("UIStroke", ACTIVATE).Thickness = 1.3
+local lootlab = Instance.new("TextButton", toggleFrame)
+lootlab.Size = UDim2.new(0.5, -5, 1, 0)
+lootlab.Position = UDim2.new(0.5, 5, 0, 0)
+lootlab.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+lootlab.Text = "Lootlab"
+lootlab.TextColor3 = Color3.fromRGB(200, 200, 200)
+lootlab.Font = Enum.Font.Gotham
+lootlab.TextSize = 14
+lootlab.AutoButtonColor = false
+local lootGlow = createGlowOutline(lootlab)
 
-ACTIVATE.MouseButton1Click:Connect(function()
-    if setclipboard then
-        setclipboard("https://discord.gg/getfrost")
-        notify("Success", "Discord link Successfully Copied.", 5)
-    else
-        notify("Error", "Clipboard function not available.", 5)
-    end
-end)
+local selected = nil
+local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Linear)
+local currentTweens = {
+	linkGlow = nil,
+	lootGlow = nil,
+}
 
-GET.MouseButton1Click:Connect(function()
-	if selectedLink then
-		setclipboard(selectedLink)
-	else
-		notifyCustom("Please select a provider and try again.")
+local function fadeGlow(glowName, glow, targetTransparency)
+	if currentTweens[glowName] then
+		currentTweens[glowName]:Cancel()
+		currentTweens[glowName] = nil
+	end
+	local tween = TweenService:Create(glow, tweenInfo, {Transparency = targetTransparency})
+	currentTweens[glowName] = tween
+	tween:Play()
+	tween.Completed:Connect(function()
+		if currentTweens[glowName] == tween then
+			currentTweens[glowName] = nil
+		end
+	end)
+end
+
+local function selectButton(btnName)
+	if btnName == "linkvertise" then
+		selected = "linkvertise"
+		fadeGlow("linkGlow", linkGlow, 0)
+		fadeGlow("lootGlow", lootGlow, 1)
+	elseif btnName == "lootlab" then
+		selected = "lootlab"
+		fadeGlow("linkGlow", linkGlow, 1)
+		fadeGlow("lootGlow", lootGlow, 0)
+	end
+end
+
+linkvertise.MouseButton1Click:Connect(function()
+	if selected ~= "linkvertise" then
+		selectButton("linkvertise")
 	end
 end)
 
-CHECK.MouseButton1Click:Connect(function()
-	local enteredKey = TextBox.Text
-	if enteredKey == "" then
-		notify("Error", "Please enter a key.", 5)
+lootlab.MouseButton1Click:Connect(function()
+	if selected ~= "lootlab" then
+		selectButton("lootlab")
+	end
+end)
+
+local keyInput = Instance.new("TextBox", main)
+keyInput.Size = UDim2.new(0.7, 0, 0, 35)
+keyInput.Position = UDim2.new(0.05, 0, 0, 125)
+keyInput.PlaceholderText = "0000-0000-0000"
+keyInput.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+keyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+keyInput.Text = ""
+keyInput.Font = Enum.Font.Gotham
+keyInput.TextSize = 14
+Instance.new("UICorner", keyInput).CornerRadius = UDim.new(0, 8)
+
+local paste = Instance.new("TextButton", main)
+paste.Size = UDim2.new(0.2, 0, 0, 35)
+paste.Position = UDim2.new(0.76, 0, 0, 125)
+paste.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+paste.Text = "Paste"
+paste.TextColor3 = Color3.fromRGB(200, 200, 200)
+paste.Font = Enum.Font.Gotham
+paste.TextSize = 14
+Instance.new("UICorner", paste).CornerRadius = UDim.new(0, 8)
+
+local getKey = Instance.new("TextButton", main)
+getKey.Size = UDim2.new(0.45, -5, 0, 40)
+getKey.Position = UDim2.new(0.05, 0, 0, 180)
+getKey.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+getKey.Text = "Get key"
+getKey.TextColor3 = Color3.fromRGB(255, 255, 255)
+getKey.Font = Enum.Font.GothamBold
+getKey.TextSize = 14
+Instance.new("UICorner", getKey).CornerRadius = UDim.new(0, 8)
+
+local verify = Instance.new("TextButton", main)
+verify.Size = UDim2.new(0.45, -5, 0, 40)
+verify.Position = UDim2.new(0.5, 5, 0, 180)
+verify.BackgroundColor3 = Color3.fromRGB(100, 70, 255)
+verify.Text = "Verify key"
+verify.TextColor3 = Color3.fromRGB(255, 255, 255)
+verify.Font = Enum.Font.GothamBold
+verify.TextSize = 14
+Instance.new("UICorner", verify).CornerRadius = UDim.new(0, 8)
+
+paste.MouseButton1Click:Connect(function()
+	pcall(function()
+		keyInput.Text = getclipboard()
+	end)
+end)
+
+getKey.MouseButton1Click:Connect(function()
+	if not selected then
+		notif("Please select one of the providers.", "Error")
 		return
 	end
+	if selected == "linkvertise" then
+		setclipboard("https://ads.luarmor.net/v/cb/dwQQOBvvyFOS/GwwwrPjgoGMNFjlB")
+		notif("Linkvertise link copied to clipboard!")
+	elseif selected == "lootlab" then
+		setclipboard("https://ads.luarmor.net/v/cb/OwAyyGgObIDY/MHkWoGnuWBlfakdA")
+		notif("Lootlab link copied to clipboard!")
+	end
+end)
 
+verify.MouseButton1Click:Connect(function()
+	local enteredKey = keyInput.Text
+	if enteredKey == "" then
+		notif("Please enter a key.", "Error")
+		return
+	end
 	local status = api.check_key(enteredKey)
 	if status.code == "KEY_VALID" then
-		notify("Success", "Key is valid! Loading Frostware...", 5)
+		notif("Key is valid! Loading Frostware...", "Success")
 		getgenv().script_key = tostring(enteredKey)
 		writefile(savedKeyPath, enteredKey)
 		loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/87fdf6d3de83847864dfa76f8eb36be6.lua"))()
-		KeyGui:Destroy()
+		gui:Destroy()
 	elseif status.code == "KEY_HWID_LOCKED" or status.code == "KEY_INCORRECT" then
-		notifyCustom("Your key has expired.")
+		notif("Your key is invalid or locked.", "Error")
 	else
-		notifyCustom("Your key has expired.")
+		notif("Your key is invalid or expired.", "Error")
 	end
 end)
