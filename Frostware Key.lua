@@ -5,16 +5,6 @@ api.script_id = "87fdf6d3de83847864dfa76f8eb36be6"
 
 local savedKeyPath = "FrostWare_Key.lua"
 
-if isfile(savedKeyPath) then
-	local savedKey = readfile(savedKeyPath)
-	local status = api.check_key(savedKey)
-	if status.code == "KEY_VALID" then
-		getgenv().script_key = savedKey
-		loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/87fdf6d3de83847864dfa76f8eb36be6.lua"))()
-		return
-	end
-end
-
 local Players = game:GetService("Players")
 local StarterGui = game:GetService("StarterGui")
 local TweenService = game:GetService("TweenService")
@@ -23,11 +13,11 @@ local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 local function notif(text, title)
-	StarterGui:SetCore("SendNotification", {
-		Title = title or "FrostWare",
-		Text = text or "",
-		Duration = 5
-	})
+    StarterGui:SetCore("SendNotification", {
+        Title = title or "FrostWare",
+        Text = text or "",
+        Duration = 5
+    })
 end
 
 local gui = Instance.new("ScreenGui", playerGui)
@@ -77,7 +67,7 @@ local subtitle = Instance.new("TextLabel", main)
 subtitle.Size = UDim2.new(1, 0, 0, 20)
 subtitle.Position = UDim2.new(0, 0, 0, 40)
 subtitle.BackgroundTransparency = 1
-subtitle.Text = "Enter your key and get access."
+subtitle.Text = "Enter your key to begin. For free."
 subtitle.TextColor3 = Color3.fromRGB(170, 170, 170)
 subtitle.Font = Enum.Font.Gotham
 subtitle.TextSize = 14
@@ -109,6 +99,12 @@ linkvertise.TextSize = 14
 linkvertise.AutoButtonColor = false
 local linkGlow = createGlowOutline(linkvertise)
 
+local linkIcon = Instance.new("ImageLabel", linkvertise)
+linkIcon.Size = UDim2.new(0, 20, 0, 20)
+linkIcon.Position = UDim2.new(0.089, 5,0.5, -10)
+linkIcon.BackgroundTransparency = 1
+linkIcon.Image = "rbxassetid://86481729660500"
+
 local lootlab = Instance.new("TextButton", toggleFrame)
 lootlab.Size = UDim2.new(0.5, -5, 1, 0)
 lootlab.Position = UDim2.new(0.5, 5, 0, 0)
@@ -119,6 +115,12 @@ lootlab.Font = Enum.Font.Gotham
 lootlab.TextSize = 14
 lootlab.AutoButtonColor = false
 local lootGlow = createGlowOutline(lootlab)
+
+local lootIcon = Instance.new("ImageLabel", lootlab)
+lootIcon.Size = UDim2.new(0, 20, 0, 20)
+lootIcon.Position = UDim2.new(0.089, 5,0.5, -10)
+lootIcon.BackgroundTransparency = 1
+lootIcon.Image = "rbxassetid://128402195473780"
 
 local selected = nil
 local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Linear)
@@ -167,7 +169,7 @@ lootlab.MouseButton1Click:Connect(function()
 end)
 
 local keyInput = Instance.new("TextBox", main)
-keyInput.Size = UDim2.new(0.7, 0, 0, 35)
+keyInput.Size = UDim2.new(0.779, 0,0, 35)
 keyInput.Position = UDim2.new(0.05, 0, 0, 125)
 keyInput.PlaceholderText = "0000-0000-0000"
 keyInput.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
@@ -177,15 +179,28 @@ keyInput.Font = Enum.Font.Gotham
 keyInput.TextSize = 14
 Instance.new("UICorner", keyInput).CornerRadius = UDim.new(0, 8)
 
+local textboxIcon = Instance.new("ImageLabel", keyInput)
+textboxIcon.Size = UDim2.new(0, 20, 0, 20)
+textboxIcon.Position = UDim2.new(0, -25, 0.5, -10)
+textboxIcon.BackgroundTransparency = 1
+textboxIcon.Image = "rbxassetid://131556088905771"
+
 local paste = Instance.new("TextButton", main)
-paste.Size = UDim2.new(0.2, 0, 0, 35)
-paste.Position = UDim2.new(0.76, 0, 0, 125)
+paste.Size = UDim2.new(0.101111181, 0, 0, 35)
+paste.Position = UDim2.new(0.849, 0,0, 125)
 paste.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
-paste.Text = "Paste"
+paste.Text = " "
 paste.TextColor3 = Color3.fromRGB(200, 200, 200)
 paste.Font = Enum.Font.Gotham
 paste.TextSize = 14
 Instance.new("UICorner", paste).CornerRadius = UDim.new(0, 8)
+
+local pasteIcon = Instance.new("ImageLabel", paste)
+pasteIcon.Size = UDim2.new(0, 20, 0, 20)
+pasteIcon.Position = UDim2.new(0.082802549, 5, 0.5, -10)
+pasteIcon.BackgroundTransparency = 1
+pasteIcon.Image = "rbxassetid://98074949340874"
+pasteIcon.ImageColor3 = Color3.fromRGB(178, 178, 178)
 
 local getKey = Instance.new("TextButton", main)
 getKey.Size = UDim2.new(0.45, -5, 0, 40)
@@ -196,6 +211,12 @@ getKey.TextColor3 = Color3.fromRGB(255, 255, 255)
 getKey.Font = Enum.Font.GothamBold
 getKey.TextSize = 14
 Instance.new("UICorner", getKey).CornerRadius = UDim.new(0, 8)
+
+local getKeyIcon = Instance.new("ImageLabel", getKey)
+getKeyIcon.Size = UDim2.new(0, 20, 0, 20)
+getKeyIcon.Position = UDim2.new(0, 30, 0.5, -10)
+getKeyIcon.BackgroundTransparency = 1
+getKeyIcon.Image = "rbxassetid://85434572689388"
 
 local verify = Instance.new("TextButton", main)
 verify.Size = UDim2.new(0.45, -5, 0, 40)
@@ -218,6 +239,7 @@ getKey.MouseButton1Click:Connect(function()
 		notif("Please select one of the providers.", "Error")
 		return
 	end
+
 	if selected == "linkvertise" then
 		setclipboard("https://ads.luarmor.net/v/cb/dwQQOBvvyFOS/GwwwrPjgoGMNFjlB")
 		notif("Linkvertise link copied to clipboard!")
@@ -233,6 +255,7 @@ verify.MouseButton1Click:Connect(function()
 		notif("Please enter a key.", "Error")
 		return
 	end
+
 	local status = api.check_key(enteredKey)
 	if status.code == "KEY_VALID" then
 		notif("Key is valid! Loading Frostware...", "Success")
@@ -246,3 +269,13 @@ verify.MouseButton1Click:Connect(function()
 		notif("Your key is invalid or expired.", "Error")
 	end
 end)
+
+if isfile(savedKeyPath) then
+	local savedKey = readfile(savedKeyPath)
+	local status = api.check_key(savedKey)
+	if status.code == "KEY_VALID" then
+		getgenv().script_key = savedKey
+		loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/87fdf6d3de83847864dfa76f8eb36be6.lua"))()
+		gui:Destroy()
+	end
+end
