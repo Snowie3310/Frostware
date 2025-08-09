@@ -20,6 +20,16 @@ local function notif(text, title)
     })
 end
 
+if isfile(savedKeyPath) then
+	local savedKey = readfile(savedKeyPath)
+	local status = api.check_key(savedKey)
+	if status.code == "KEY_VALID" then
+		getgenv().script_key = savedKey
+		loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/87fdf6d3de83847864dfa76f8eb36be6.lua"))()
+		return
+	end
+end
+
 local gui = Instance.new("ScreenGui", playerGui)
 gui.Name = "FWSDkey"
 gui.ResetOnSpawn = false
@@ -269,13 +279,3 @@ verify.MouseButton1Click:Connect(function()
 		notif("Your key is invalid or expired.", "Error")
 	end
 end)
-
-if isfile(savedKeyPath) then
-	local savedKey = readfile(savedKeyPath)
-	local status = api.check_key(savedKey)
-	if status.code == "KEY_VALID" then
-		getgenv().script_key = savedKey
-		loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/87fdf6d3de83847864dfa76f8eb36be6.lua"))()
-		gui:Destroy()
-	end
-end
