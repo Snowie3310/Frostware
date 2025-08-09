@@ -20,7 +20,6 @@ local function notif(text, title)
     })
 end
 
--- Auto-load key if saved and valid, then exit
 if isfile(savedKeyPath) then
     local savedKey = readfile(savedKeyPath)
     local status = api.check_key(savedKey)
@@ -30,8 +29,6 @@ if isfile(savedKeyPath) then
         return
     end
 end
-
--- Rest of your UI code starts here
 
 local gui = Instance.new("ScreenGui", playerGui)
 gui.Name = "FWSDkey"
@@ -262,4 +259,23 @@ getKey.MouseButton1Click:Connect(function()
     end
 end)
 
-verify.Mouse
+verify.MouseButton1Click:Connect(function()
+	local enteredKey = keyInput.Text
+	if enteredKey == "" then
+		notif("Please enter a key.", "Error")
+		return
+	end
+
+	local status = api.check_key(enteredKey)
+	if status.code == "KEY_VALID" then
+		notif("Key is valid! Loading Frostware...", "Success")
+		getgenv().script_key = tostring(enteredKey)
+		writefile(savedKeyPath, enteredKey)
+		loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/87fdf6d3de83847864dfa76f8eb36be6.lua"))()
+		gui:Destroy()
+	elseif status.code == "KEY_HWID_LOCKED" or status.code == "KEY_INCORRECT" then
+		notif("Your key is invalid or locked.", "Error")
+	else
+		notif("Your key is invalid or expired.", "Error")
+	end
+end)
