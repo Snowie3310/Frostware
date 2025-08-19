@@ -30,10 +30,11 @@ if isfile(savedKeyPath) then
     end
 end
 
-local gui = Instance.new("ScreenGui", playerGui)
+local gui = Instance.new("ScreenGui")
 gui.Name = "FWSDkey"
 gui.ResetOnSpawn = false
 gui.IgnoreGuiInset = true
+gui.Parent = gethui()
 
 local main = Instance.new("Frame")
 main.Size = UDim2.new(0, 360, 0, 240)
