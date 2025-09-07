@@ -3,7 +3,7 @@ repeat task.wait() until game:IsLoaded()
 local api = loadstring(game:HttpGet("https://sdkapi-public.luarmor.net/library.lua"))()
 api.script_id = "87fdf6d3de83847864dfa76f8eb36be6"
 
-local savedKeyPath = "FrostWare_sex.lua"
+local savedKeyPath = "Frostware_key.lua"
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
