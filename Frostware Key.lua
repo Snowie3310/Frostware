@@ -3,21 +3,109 @@ repeat task.wait() until game:IsLoaded()
 local api = loadstring(game:HttpGet("https://sdkapi-public.luarmor.net/library.lua"))()
 api.script_id = "87fdf6d3de83847864dfa76f8eb36be6"
 
-local savedKeyPath = "FrostWare_Key.lua"
+local savedKeyPath = "FrostWare_sex.lua"
 
 local Players = game:GetService("Players")
-local StarterGui = game:GetService("StarterGui")
 local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local function notif(text, title)
-    StarterGui:SetCore("SendNotification", {
-        Title = title or "FrostWare",
-        Text = text or "",
-        Duration = 5
-    })
+local SideNotify = {}
+local activeNotifs = {}
+local notifSpacing = 6
+local notifWidth, notifHeight = 220, 50
+local exitTweenTime = 0.4
+
+local parentGui = Instance.new("ScreenGui")
+parentGui.IgnoreGuiInset = true
+parentGui.ResetOnSpawn = false
+parentGui.Parent = CoreGui
+
+local function getYPosition(index)
+    local viewportY = workspace.CurrentCamera.ViewportSize.Y
+    return 0.85 * viewportY - ((index - 1) * (notifHeight + notifSpacing))
+end
+
+local function updateStack()
+    for i, notif in ipairs(activeNotifs) do
+        local targetY = getYPosition(i)
+        TweenService:Create(notif, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {
+            Position = UDim2.new(1, -notifWidth - 20, 0, targetY)
+        }):Play()
+    end
+end
+
+function SideNotify.Notify(message, duration)
+    duration = duration or 3
+
+    local frame = Instance.new("Frame")
+    frame.Parent = parentGui
+    frame.Size = UDim2.new(0, notifWidth, 0, notifHeight)
+    frame.Position = UDim2.new(1, notifWidth, 0, workspace.CurrentCamera.ViewportSize.Y * 0.85)
+    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    frame.BorderSizePixel = 0
+    frame.BackgroundTransparency = 0.1
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+
+    local info = Instance.new("TextLabel")
+    info.Parent = frame
+    info.BackgroundTransparency = 1
+    info.Size = UDim2.new(1, -10, 0, 14)
+    info.Position = UDim2.new(0, 8, 0, 4)
+    info.Font = Enum.Font.GothamBold
+    info.Text = "FrostWare"
+    info.TextColor3 = Color3.fromRGB(200, 200, 200)
+    info.TextSize = 12
+    info.TextXAlignment = Enum.TextXAlignment.Left
+
+    local text = Instance.new("TextLabel")
+    text.Parent = frame
+    text.BackgroundTransparency = 1
+    text.Size = UDim2.new(1, -10, 0, 25)
+    text.Position = UDim2.new(0, 8, 0, 18)
+    text.Font = Enum.Font.GothamBold
+    text.Text = message
+    text.TextColor3 = Color3.fromRGB(255, 255, 255)
+    text.TextSize = 16
+    text.TextXAlignment = Enum.TextXAlignment.Left
+
+    local bar = Instance.new("Frame")
+    bar.Parent = frame
+    bar.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
+    bar.Size = UDim2.new(1, -16, 0, 3)
+    bar.Position = UDim2.new(0, 8, 1, -6)
+    bar.BorderSizePixel = 0
+    Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 3)
+
+    table.insert(activeNotifs, frame)
+    updateStack()
+
+    TweenService:Create(bar, TweenInfo.new(duration, Enum.EasingStyle.Linear), {
+        Size = UDim2.new(0, 0, 0, 3)
+    }):Play()
+
+    task.delay(duration, function()
+        if not frame.Parent then return end
+        for i, notif in ipairs(activeNotifs) do
+            if notif == frame then
+                table.remove(activeNotifs, i)
+                break
+            end
+        end
+        TweenService:Create(frame, TweenInfo.new(exitTweenTime, Enum.EasingStyle.Quad), {
+            Position = UDim2.new(1, notifWidth, frame.Position.Y.Scale, frame.Position.Y.Offset)
+        }):Play()
+        task.delay(exitTweenTime, function()
+            frame:Destroy()
+            updateStack()
+        end)
+    end)
+end
+
+getgenv().sideNotify = function(message, duration)
+    SideNotify.Notify(message, duration)
 end
 
 if isfile(savedKeyPath) then
@@ -247,36 +335,36 @@ end)
 
 getKey.MouseButton1Click:Connect(function()
     if not selected then
-        notif("Please select one of the providers.", "Error")
+        sideNotify("Please select a provider..", 3)
         return
     end
 
     if selected == "linkvertise" then
         setclipboard("https://ads.luarmor.net/v/cb/dwQQOBvvyFOS/GwwwrPjgoGMNFjlB")
-        notif("Linkvertise link copied to clipboard!")
+        sideNotify("Linkvertise link copied!", 3)
     elseif selected == "lootlab" then
         setclipboard("https://ads.luarmor.net/v/cb/OwAyyGgObIDY/MHkWoGnuWBlfakdA")
-        notif("Lootlab link copied to clipboard!")
+        sideNotify("Lootlab link copied!", 3)
     end
 end)
 
 verify.MouseButton1Click:Connect(function()
 	local enteredKey = keyInput.Text
 	if enteredKey == "" then
-		notif("Please enter a key.", "Error")
+		sideNotify("Please enter a key.", 3)
 		return
 	end
 
 	local status = api.check_key(enteredKey)
 	if status.code == "KEY_VALID" then
-		notif("Key is valid! Loading Frostware...", "Success")
+		sideNotify("Valid key! Loading Frostware...", 3)
 		getgenv().script_key = tostring(enteredKey)
 		writefile(savedKeyPath, enteredKey)
 		loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/87fdf6d3de83847864dfa76f8eb36be6.lua"))()
 		gui:Destroy()
 	elseif status.code == "KEY_HWID_LOCKED" or status.code == "KEY_INCORRECT" then
-		notif("Your key is invalid or locked.", "Error")
+		sideNotify("Your key is invalid or locked.", 3)
 	else
-		notif("Your key is invalid or expired.", "Error")
+		sideNotify("Your key is invalid or expired.", 3)
 	end
 end)
